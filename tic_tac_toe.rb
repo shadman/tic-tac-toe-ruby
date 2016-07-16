@@ -100,12 +100,14 @@ class TicTacToe
 	end 
 
 	def play(player)
+		puts "Your actions:" + (player.actions.to_s)
 		option = 0
 		game_option = self.game_option * self.game_option
 		while !(1..game_option).include?(option.to_i)
 			puts "\n\n" + player.name + ": Please select your desired position from 1 to #{game_option}:"
 			option = gets.chomp
-		end	
+		end
+		player.actions.push(option) 	
 		self.total_actions += 1
 		option
 	end
@@ -120,7 +122,7 @@ class Player
 		@name = name
 		@score = 0
 		@user_type
-		@actions
+		@actions = []
 	end
 
 	def score_increase
