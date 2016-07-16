@@ -11,7 +11,7 @@ class TicTacToe
 	def player_options
 		option = 0
 		while option.to_i != 1 && option.to_i != 2
-			puts "\n\nPlayer Options: \n 1. 2 Players \n 2. With Computer \n Please select any one option by pressing (1 / 2) : "
+			puts "\n\nPlayer Options: \n 1. 2 Players \n 2. With Computer \n Please select any one option by pressing 1 or 2: "
 			option = gets.chomp
 		end
 		@players_option = option.to_i
@@ -20,7 +20,7 @@ class TicTacToe
 	def game_options
 		option = 0
 		while option.to_i != 1 && option.to_i != 2 && option.to_i != 3
-			puts "\n\nGame Options: \n 1. 3x3 Boxes \n 2. 4x4 Boxes \n 3. 5x5 Boxes \n Please select any one option ( 1 | 2 | 3 ): "
+			puts "\n\nGame Options: \n 1. 3x3 Boxes \n 2. 4x4 Boxes \n 3. 5x5 Boxes \n Please select any one option from 1 to 3: "
 			option = gets.chomp
 		end
 		@game_option = convert_option option.to_i
@@ -63,7 +63,18 @@ class TicTacToe
 			puts string + "\t|\n\n"
 		end
 
+		self.play
 	end 
+
+	def play
+		option = 0
+		game_option = @game_option*@game_option
+		while !(1..game_option).include?(option.to_i)
+			puts "\n\nPlease select your desired position from 1 to #{game_option}:"
+			option = gets.chomp
+		end	
+		option
+	end
 
 end
 
