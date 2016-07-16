@@ -40,7 +40,7 @@ class TicTacToe
 
 
 	def start(playerX, playerY)
-		self.draw_board
+		self.draw_board(playerX, playerY)
 		player = play_and_switch(playerX, playerY)
 		if is_finished === false
 			self.play(player)
@@ -83,7 +83,7 @@ class TicTacToe
 		puts line + "\n\n"
 	end 
 
-	def draw_board
+	def draw_board(playerX, playerY)
 		self.draw_header
 
 		count = 1
@@ -92,7 +92,10 @@ class TicTacToe
 			
 			string = "\t\t\t\n"
 			(1..self.game_option).each do |y|
-				string += "\t|\t" + count.to_s
+				position = count
+				position = playerX.user_type if playerX.actions.include?(count)
+				position = playerY.user_type if playerY.actions.include?(count)
+				string += "\t|\t" + position.to_s
 				count += 1
 			end
 			puts string + "\t|\n\n"
@@ -100,7 +103,6 @@ class TicTacToe
 	end 
 
 	def play(player)
-		puts "Your actions:" + (player.actions.to_s)
 		option = 0
 		game_option = self.game_option * self.game_option
 		while !(1..game_option).include?(option.to_i)
