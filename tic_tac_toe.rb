@@ -109,7 +109,7 @@ class TicTacToe
 			puts "\n\n" + player.name + ": Please select your desired position from 1 to #{game_option}:"
 			option = gets.chomp
 		end
-		player.actions.push(option) 	
+		player.actions.push(option.to_i) 	
 		self.total_actions += 1
 		option
 	end
@@ -123,7 +123,7 @@ class Player
 	def initialize(name, user_type)
 		@name = name
 		@score = 0
-		@user_type
+		@user_type = user_type
 		@actions = []
 	end
 
