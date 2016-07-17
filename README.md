@@ -19,11 +19,15 @@
 
 
 ## How to Start/Run
-- Open Terminal
+- Open Ubuntu Terminal
 - Open your project directory, where you have deployed
-	$	cd ~/projects/ruby/
+
+	$ cd ~/projects/ruby/
+
 - Run player.rb file via ruby to start
-	$	ruby play.rb
+
+	$ ruby play.rb
+
 - Follow instructions and enjoy !
 
 
