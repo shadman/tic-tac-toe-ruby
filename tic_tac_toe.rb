@@ -11,6 +11,7 @@ class TicTacToe
 		@new_player
 	end
 
+	# Getting player options; 2 players or with computer
 	def player_options
 		option = 0
 		while option.to_i != 1 && option.to_i != 2
@@ -20,6 +21,8 @@ class TicTacToe
 		@players_option = option.to_i
 	end
 
+
+	# Getting user desidred game board 3x3/4x4/5x5
 	def game_options
 		option = 0
 		while option.to_i != 1 && option.to_i != 2 && option.to_i != 3
@@ -29,6 +32,8 @@ class TicTacToe
 		@game_option = convert_option option.to_i
 	end
 
+
+	# Converting user selected value into game required
 	def convert_option option
 		selected = case option
 			when 1 then 3
@@ -39,6 +44,8 @@ class TicTacToe
 		selected
 	end
 
+
+	# Winning patterns
 	def winning_patterns
 			
 			type = @game_option
@@ -65,6 +72,20 @@ class TicTacToe
 					end
 	end
 
+
+	# Robot patterns, for auto players of every game board
+	def default_robot_patterns
+			
+			type = @game_option
+
+			turn = case type
+					when 3	# 3 x 3 robot patterns
+						return [5,1,9,3,4,6,2,8,7]
+					end
+	end
+
+
+	# Verifying player; is won 
 	def is_winner(player)
 		winning_patterns.each do |pattern|
 			intersected = pattern & player.actions
@@ -75,64 +96,8 @@ class TicTacToe
 		return false
 	end
 
-	def start(playerX, playerY)
-		
-		player = @new_player
-		player = playerX if player.nil?
 
-			# Setting last player
-		@new_player = play_and_switch(playerX, playerY) # Setting new player
-
-		if is_finished(player) === false 
-			draw_board(playerX, playerY)
-			play(playerX, playerY)
-			start(playerX, playerY)
-		else
-			# if won/draw
-			# increase winner score and print current scores
-			player.score_increase 
-			puts "\nCurrent Score of player #{playerX.name} is #{playerX.score}\nCurrent Score of player #{playerY.name} is #{playerY.score}" 
-			
-			# Ask to re-play
-			puts "\nWant to play it again? press Y to continue:"
-			replay = gets.chomp.downcase
-			if replay == 'y' || replay == 'yes'
-				reset(playerX, playerY)
-			else 
-				puts "Ba bye !"
-			end
-
-		end
-	end
-
-	def is_valid_input(input, playerX, playerY)
-		if !playerX.actions.include?(input) && !playerY.actions.include?(input) 
-			return true
-		else 
-			puts "Sorry, already selected"
-			return false
-		end
-	end
-
-	def reset(playerX, playerY)
-		playerX.actions = []
-		playerY.actions = []
-		@user_turn='X'
-		@total_actions=0
-		@new_player=playerX
-		start(playerX, playerY)
-	end
-
-	def play_and_switch(playerX, playerY)
-		if @user_turn == 'Y'
-			@user_turn = 'X'
-			playerY
-		else
-			@user_turn = 'Y'
-			playerX
-		end
-	end
-
+	# Verifying is finished or someone won already
 	def is_finished(player)
 		game_option = @game_option * @game_option
 		
@@ -150,7 +115,128 @@ class TicTacToe
 		return false
 	end
 
-	def draw_header
+
+	# Initializing and starting main game
+	def start(playerX, playerY)
+
+		# Setting last player		
+		player = @new_player
+		player = playerX if player.nil?
+
+		# Setting new player
+		@new_player = play_and_switch(playerX, playerY) # Setting new player
+
+		
+
+		if is_finished(player) === false 
+			draw_board(playerX, playerY)
+			if @new_player.user_type == 'Y' && @players_option == 2
+				robot(playerX, playerY)
+			else 
+				play(playerX, playerY)
+			end
+
+			start(playerX, playerY)
+		else
+			# if won/draw
+			draw_board(playerX, playerY, 1)
+
+			# increase winner score and print current scores
+			player.score_increase 
+			puts "\nCurrent Score of player #{playerX.name} is #{playerX.score}\nCurrent Score of player #{playerY.name} is #{playerY.score}" 
+			
+			# Ask to re-play
+			puts "\nWant to play it again? press any key to continue or 'N' to close:"
+			replay = gets.chomp.downcase
+			if replay == 'N' || replay == 'n'
+				puts "Ba bye !"
+			else 
+				reset(playerX, playerY)
+			end
+
+		end
+	end
+
+
+	# Auto player 
+	def robot(playerX, playerY)
+		position = robot_position(playerX, playerY)
+		@new_player.actions.push(position.to_i) 
+		@new_player.actions = @new_player.actions.sort
+		@total_actions += 1
+	end
+
+
+	def robot_position(playerX, playerY)
+
+		# from winning patterns; if near to win
+		winning_patterns.each do |pattern|
+			intersected = pattern & playerY.actions
+			remaining_positions = pattern - playerY.actions
+			if (intersected.length == @game_option - 1) && remaining_positions.length > 0 && !playerY.actions.include?(remaining_positions[0])
+				return remaining_positions[0]
+			end
+		end
+
+		# from winning patterns; if other player is going to win and nothing got from above 
+		winning_patterns.each do |pattern|
+			intersected = pattern & playerX.actions
+			remaining_positions = pattern - playerX.actions
+			if (intersected.length == @game_option - 1) && remaining_positions.length > 0 && !playerX.actions.include?(remaining_positions[0])
+				return remaining_positions[0]
+			end
+		end
+
+		# from defined pattern and nothing got from above 
+		default_robot_patterns.each do |position|
+			return position if is_valid_input(position, playerX, playerY) === true
+		end
+
+	end
+
+
+	# Switching turn
+	def play_and_switch(playerX, playerY)
+		if @user_turn == 'Y'
+			@user_turn = 'X'
+			playerY
+		else
+			@user_turn = 'Y'
+			playerX
+		end
+	end
+
+
+	# Getting action from players
+	def play(playerX, playerY)
+		option = 0
+		game_option = @game_option * @game_option
+		while !(1..game_option).include?(option.to_i)
+			puts "\n\n" + @new_player.name + ": Please select your desired position from 1 to #{game_option}:"
+			input = gets.chomp.to_i
+			option = 0
+			option = input if is_valid_input(input, playerX, playerY) === true
+		end
+		@new_player.actions.push(option.to_i) 
+		@new_player.actions = @new_player.actions.sort
+		@total_actions += 1
+		option
+	end
+
+
+	# Is input already occupied
+	def is_valid_input(input, playerX, playerY)
+		if !playerX.actions.include?(input) && !playerY.actions.include?(input) 
+			return true
+		else 
+			puts "Sorry, already selected"
+			return false
+		end
+	end
+
+
+	# Drawing lines with header on every board drawing
+	def draw_header(is_finished)
 		line = ''
 		max_col = 20 * @game_option
 		(0..max_col).each do |a|
@@ -159,15 +245,20 @@ class TicTacToe
 
 		puts "\n" + line
 		if @total_actions == 0
-			puts "\t\tTic Tac Toe Game Started   "
+			puts "\n" + line
+			puts "\t\tTic Tac Toe Game Started"
+		elsif is_finished == 1
+			puts "\t\tTic Tac Toe Game Finished"
 		else 
-			puts "\t\tTic Tac Toe Game (#{@total_actions+1} Turn)   "
+			puts "\t\tTic Tac Toe Game (#{@total_actions+1} Turn)"
 		end
 		puts line + "\n\n"
 	end 
 
-	def draw_board(playerX, playerY)
-		draw_header
+
+	# Drawing board as per selected game option
+	def draw_board(playerX, playerY, is_finished=0)
+		draw_header(is_finished)
 
 		count = 1
 		string = ''
@@ -185,19 +276,15 @@ class TicTacToe
 		end
 	end 
 
-	def play(playerX, playerY)
-		option = 0
-		game_option = @game_option * @game_option
-		while !(1..game_option).include?(option.to_i)
-			puts "\n\n" + @new_player.name + ": Please select your desired position from 1 to #{game_option}:"
-			input = gets.chomp.to_i
-			option = 0
-			option = input if is_valid_input(input, playerX, playerY) === true
-		end
-		@new_player.actions.push(option.to_i) 
-		@new_player.actions = @new_player.actions.sort
-		@total_actions += 1
-		option
+
+	# Reseting game params for next round
+	def reset(playerX, playerY)
+		playerX.actions = []
+		playerY.actions = []
+		@user_turn='X'
+		@total_actions=0
+		@new_player=playerX
+		start(playerX, playerY)
 	end
 
 end
@@ -222,6 +309,7 @@ end
 
 class Play
 
+	# Start game
 	def start
 
 		selections = TicTacToe.new
