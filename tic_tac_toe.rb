@@ -76,7 +76,6 @@ class TicTacToe
 	end
 
 	def start(playerX, playerY)
-		draw_board(playerX, playerY)
 		
 		player = @new_player
 		player = playerX if player.nil?
@@ -85,6 +84,7 @@ class TicTacToe
 		@new_player = play_and_switch(playerX, playerY) # Setting new player
 
 		if is_finished(player) === false 
+			draw_board(playerX, playerY)
 			play
 			start(playerX, playerY)
 		else
@@ -94,9 +94,25 @@ class TicTacToe
 			puts "\nCurrent Score of player #{playerX.name} is #{playerX.score}\nCurrent Score of player #{playerY.name} is #{playerY.score}" 
 			
 			# Ask to re-play
+			puts "\nWant to play it again? press Y to continue:"
+			replay = gets.chomp.downcase
+			if replay == 'y' || replay == 'yes'
+				reset(playerX, playerY)
+			else 
+				puts "Ba bye !"
+			end
 
 		end
-	end 
+	end
+
+	def reset(playerX, playerY)
+		playerX.actions = []
+		playerY.actions = []
+		@user_turn='X'
+		@total_actions=0
+		@new_player=playerX
+		start(playerX, playerY)
+	end
 
 	def play_and_switch(playerX, playerY)
 		if @user_turn == 'Y'
@@ -113,7 +129,7 @@ class TicTacToe
 		
 		# Verifying is anyone won
 		if is_winner(player) == true
-			puts "Ya!! #{player.name} is won !"
+			puts "Yay!! #{player.name} Won !"
 			return true
 		end
 
