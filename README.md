@@ -31,7 +31,7 @@
 - Follow instructions and enjoy !
 
 
-## Previously developed in JavaScript here:
+## Previously developed in Javascript here:
 ###LIVE: 
 https://tic-tac-toe-board.herokuapp.com/
 
