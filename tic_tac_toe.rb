@@ -81,6 +81,10 @@ class TicTacToe
 			turn = case type
 					when 3	# 3 x 3 robot patterns
 						return [5,1,9,3,4,6,2,8,7]
+					when 4	# 4 x 4 robot patterns
+						return [1,6,11,16,4,3,2,5,9,13,14,15,8,12,10,7]
+					when 5	# 5 x 5 robot patterns
+						return [1,7,13,19,25,5,4,3,2,21,16,11,6,15,20,10,23,22,24,17,18,12,14,8,9]
 					end
 	end
 
