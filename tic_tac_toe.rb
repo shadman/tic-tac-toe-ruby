@@ -85,7 +85,7 @@ class TicTacToe
 
 		if is_finished(player) === false 
 			draw_board(playerX, playerY)
-			play
+			play(playerX, playerY)
 			start(playerX, playerY)
 		else
 			# if won/draw
@@ -102,6 +102,15 @@ class TicTacToe
 				puts "Ba bye !"
 			end
 
+		end
+	end
+
+	def is_valid_input(input, playerX, playerY)
+		if !playerX.actions.include?(input) && !playerY.actions.include?(input) 
+			return true
+		else 
+			puts "Sorry, already selected"
+			return false
 		end
 	end
 
@@ -152,7 +161,7 @@ class TicTacToe
 		if @total_actions == 0
 			puts "\t\tTic Tac Toe Game Started   "
 		else 
-			puts "\t\tTic Tac Toe Game (#{@total_actions} Turn)   "
+			puts "\t\tTic Tac Toe Game (#{@total_actions+1} Turn)   "
 		end
 		puts line + "\n\n"
 	end 
@@ -176,12 +185,14 @@ class TicTacToe
 		end
 	end 
 
-	def play
+	def play(playerX, playerY)
 		option = 0
 		game_option = @game_option * @game_option
 		while !(1..game_option).include?(option.to_i)
 			puts "\n\n" + @new_player.name + ": Please select your desired position from 1 to #{game_option}:"
-			option = gets.chomp
+			input = gets.chomp.to_i
+			option = 0
+			option = input if is_valid_input(input, playerX, playerY) === true
 		end
 		@new_player.actions.push(option.to_i) 
 		@new_player.actions = @new_player.actions.sort
