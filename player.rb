@@ -1,4 +1,3 @@
-
 class Player
 	attr_accessor :name, :score, :user_type, :actions
 	

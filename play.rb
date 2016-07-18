@@ -18,12 +18,14 @@ class Play
 		if game_players == 1
 			puts "\n2nd Player Name: "
 			playerY = Player.new(gets.chomp.capitalize, 'Y')
+
+		# If computer(robot) selected
 		else 
 			puts "\nComputer Initialized. "
 			playerY = Player.new('Computer', 'Y')
 		end
 
-		# Drawing board as per option selection
+		# Drawing board as per options selected
 		selections.start(playerX, playerY)
 	end
 
